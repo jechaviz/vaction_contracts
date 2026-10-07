@@ -8,6 +8,11 @@ fn test_action_contract_classification() {
 	assert browser.category == 'browser'
 	assert browser.risk == .medium
 	assert !browser.confirmation_required()
+	submit := contract_for_action('Browser.Submit')
+	assert submit.category == 'browser'
+	assert submit.risk == .high
+	assert submit.confirmation_required()
+	assert .network in submit.effects
 }
 
 fn test_secret_redaction() {
