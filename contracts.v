@@ -40,6 +40,10 @@ pub fn action_skill(action string) string {
 }
 
 pub fn contract_for_action(action string) ActionContract {
+	if action == 'Browser.Submit' {
+		return new_contract(action, 'Browser', 'browser', .high,
+			[Effect.browser_session, Effect.network], ['url', 'form_method', 'result'], true, true)
+	}
 	skill := action_skill(action)
 	if skill == '' {
 		return match action {
