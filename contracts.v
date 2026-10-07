@@ -41,8 +41,8 @@ pub fn action_skill(action string) string {
 
 pub fn contract_for_action(action string) ActionContract {
 	if action == 'Browser.Submit' {
-		return new_contract(action, 'Browser', 'browser', .high,
-			[Effect.browser_session, Effect.network], ['url', 'form_method', 'result'], true, true)
+		return new_contract(action, 'Browser', 'browser', .medium,
+			[Effect.browser_session, Effect.network], ['url', 'form_method', 'result'], true, false)
 	}
 	skill := action_skill(action)
 	if skill == '' {
@@ -51,8 +51,8 @@ pub fn contract_for_action(action string) ActionContract {
 				new_contract(action, '', 'local', .low, [Effect.local_write], ['value'], true, false)
 			}
 			else {
-				new_contract(action, '', 'unknown', .medium, []Effect{}, ['manual_review'], false,
-					true)
+				new_contract(action, '', 'unknown', .medium, []Effect{}, ['runtime_receipt'], true,
+					false)
 			}
 		}
 	}
@@ -63,7 +63,7 @@ pub fn contract_for_action(action string) ActionContract {
 		}
 		'Shell' {
 			new_contract(action, skill, 'shell', .high, [Effect.process, Effect.local_write],
-				['command', 'exit_code'], false, true)
+				['command', 'exit_code'], true, false)
 		}
 		'HTTP', 'GraphQL', 'WS' {
 			new_contract(action, skill, 'network', .medium, [Effect.network], ['status'],
@@ -79,7 +79,7 @@ pub fn contract_for_action(action string) ActionContract {
 		}
 		'AppDrive' {
 			new_contract(action, skill, 'desktop', .high, [Effect.desktop_input],
-				['window', 'input_receipt'], true, true)
+				['window', 'input_receipt'], true, false)
 		}
 		'LLM', 'Vision' {
 			new_contract(action, skill, 'ai', .medium, [Effect.model_call], ['provider', 'usage'],
@@ -94,8 +94,8 @@ pub fn contract_for_action(action string) ActionContract {
 				true, false)
 		}
 		else {
-			new_contract(action, skill, 'unknown', .medium, []Effect{}, ['manual_review'], false,
-				true)
+			new_contract(action, skill, 'unknown', .medium, []Effect{}, ['runtime_receipt'], true,
+				false)
 		}
 	}
 }
@@ -123,7 +123,7 @@ pub fn (contract ActionContract) valid() bool {
 }
 
 pub fn (contract ActionContract) confirmation_required() bool {
-	return contract.requires_confirmation || contract.risk in [.high, .critical]
+	return contract.requires_confirmation
 }
 
 fn new_contract(action string, skill string, category string, risk Risk, effects []Effect,
