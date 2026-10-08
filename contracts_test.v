@@ -12,7 +12,7 @@ fn test_action_contract_classification() {
 	assert submit.category == 'browser'
 	assert submit.risk == .high
 	assert submit.confirmation_required()
-	assert .network in submit.effects
+	assert Effect.network in submit.effects
 }
 
 fn test_secret_redaction() {
