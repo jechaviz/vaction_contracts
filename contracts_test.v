@@ -10,8 +10,8 @@ fn test_action_contract_classification() {
 	assert !browser.confirmation_required()
 	submit := contract_for_action('Browser.Submit')
 	assert submit.category == 'browser'
-	assert submit.risk == .medium
-	assert !submit.confirmation_required()
+	assert submit.risk == .high
+	assert submit.confirmation_required()
 	assert .network in submit.effects
 }
 
